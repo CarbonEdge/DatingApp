@@ -19,7 +19,7 @@ export class NavComponent implements OnInit {
         console.log('gr8 success');
       },
       error => {
-        console.log('failure');
+        console.log(error);
       }
     );
   }
