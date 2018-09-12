@@ -13,12 +13,12 @@ import { nextTick } from 'q';
   styleUrls: ['./member-edit.component.css']
 })
 export class MemberEditComponent implements OnInit {
-  @ViewChild('editForm')
-  editForm: NgForm;
+  @ViewChild('editForm') editForm: NgForm;
   user: User;
+  photoUrl: string;
 
   @HostListener('window:beforeunload', ['$event'])
-  unloadNotifcation($event: any) {
+  unloadNotification($event: any) {
     if (this.editForm.dirty) {
       $event.returnValue = true;
     }
@@ -35,15 +35,19 @@ export class MemberEditComponent implements OnInit {
     this.router.data.subscribe(data => {
       this.user = data['user'];
     });
+    this.authService.currentPhotoUrl.subscribe(photoUrl => this.photoUrl = photoUrl);
   }
 
   updateUser() {
-    this.userService.updateUser(this.authService.decodedToken.nameid, this.user).subscribe(nx =>{
+    this.userService.updateUser(this.authService.decodedToken.nameid, this.user).subscribe(nx => {
       this.alertify.success('Profile update successfully');
       this.editForm.reset(this.user);
     }, error => {
       this.alertify.error(error);
     });
 
+  }
+  updateMainPhoto(photoUrl) {
+    this.user.photoUrl = photoUrl;
   }
 }
