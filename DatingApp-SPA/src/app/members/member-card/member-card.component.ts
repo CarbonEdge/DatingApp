@@ -10,7 +10,7 @@ import { AlertifyService } from '../../_services/alertify.service';
   styleUrls: ['./member-card.component.css']
 })
 export class MemberCardComponent implements OnInit {
-@Input() user: User;
+  @Input() user: User;
 
   constructor(private authService: AuthService, private userService: UserService, private alertify: AlertifyService) { }
 
@@ -18,8 +18,8 @@ export class MemberCardComponent implements OnInit {
   }
 
   sendLike(id: number) {
-    this.userService.sendLike(this.authService.decodedToken.nameid, id ).subscribe(data => {
-      this.alertify.success('Success you have liked: ' + this.user.knownAs);
+    this.userService.sendLike(this.authService.decodedToken.nameid, id).subscribe(data => {
+      this.alertify.success('You have liked: ' + this.user.knownAs);
     }, error => {
       this.alertify.error(error);
     });

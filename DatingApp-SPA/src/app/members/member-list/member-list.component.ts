@@ -13,15 +13,12 @@ import { Pagination, PaginatedResult } from '../../_models/pagination';
 export class MemberListComponent implements OnInit {
   users: User[];
   user: User = JSON.parse(localStorage.getItem('user'));
-  genderList = [{value: 'male', display: 'Males'}, {value: 'female', display: 'Female'}];
+  genderList = [{value: 'male', display: 'Males'}, {value: 'female', display: 'Females'}];
   userParams: any = {};
   pagination: Pagination;
 
-  constructor(
-    private userService: UserService,
-    private alertify: AlertifyService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private userService: UserService, private alertify: AlertifyService,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
@@ -49,11 +46,12 @@ export class MemberListComponent implements OnInit {
 
   loadUsers() {
     this.userService.getUsers(this.pagination.currentPage, this.pagination.itemsPerPage, this.userParams)
-    .subscribe((res: PaginatedResult<User[]>) => {
-      this.users = res.result;
-      this.pagination = res.pagination;
+      .subscribe((res: PaginatedResult<User[]>) => {
+        this.users = res.result;
+        this.pagination = res.pagination;
     }, error => {
       this.alertify.error(error);
     });
   }
+
 }
