@@ -102,7 +102,7 @@
         "City": "Weeksville",
         "Country": "Malta",
         "Photos": [{
-            "url": "https://randomuser.me/api/portraits/male/83.jpg",
+            "url": "https://randomuser.me/api/portraits/men/83.jpg",
             "isMain": true,
             "description": "Aute aute enim adipisicing irure sit duis."
         }]
@@ -120,7 +120,7 @@
         "City": "Richford",
         "Country": "Kuwait",
         "Photos": [{
-            "url": "https://randomuser.me/api/portraits/male/96.jpg",
+            "url": "https://randomuser.me/api/portraits/men/96.jpg",
             "isMain": true,
             "description": "Id ad enim culpa aliqua sit do."
         }]
@@ -138,7 +138,7 @@
         "City": "Spokane",
         "Country": "Spain",
         "Photos": [{
-            "url": "https://randomuser.me/api/portraits/male/91.jpg",
+            "url": "https://randomuser.me/api/portraits/men/91.jpg",
             "isMain": true,
             "description": "Sunt laboris sint enim sint officia nostrud aute ex eu labore cillum non aute."
         }]
@@ -156,7 +156,7 @@
         "City": "Harrodsburg",
         "Country": "Iraq",
         "Photos": [{
-            "url": "https://randomuser.me/api/portraits/male/7.jpg",
+            "url": "https://randomuser.me/api/portraits/men/7.jpg",
             "isMain": true,
             "description": "Sit aute minim adipisicing anim do cupidatat in ut."
         }]
@@ -174,7 +174,7 @@
         "City": "Thermal",
         "Country": "Kazakhstan",
         "Photos": [{
-            "url": "https://randomuser.me/api/portraits/male/8.jpg",
+            "url": "https://randomuser.me/api/portraits/men/8.jpg",
             "isMain": true,
             "description": "Eu nostrud culpa nisi nostrud ex."
         }]

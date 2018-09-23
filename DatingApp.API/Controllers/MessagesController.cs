@@ -6,6 +6,7 @@ using DatingApp.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -13,12 +14,13 @@ namespace DatingApp.API.Controllers
 {
     [ServiceFilter(typeof(LogUserActivity))]
     [Authorize]
-    [Route("api/users/{userid}/[controller]")]
+    [Route("api/users/{userId}/[controller]")]
     [ApiController]
     public class MessagesController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly IDatingRepository _repo;
+
         public MessagesController(IDatingRepository repo, IMapper mapper)
         {
             _repo = repo;
@@ -26,48 +28,66 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpGet("{id}", Name = "GetMessage")]
-        public async Task<IActionResult> GetMessage(int userid, int id)
+        public async Task<IActionResult> GetMessage(int userId, int id)
         {
-
-            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
-            }
 
             var messageFromRepo = await _repo.GetMessage(id);
+
             if (messageFromRepo == null)
-            {
                 return NotFound();
-            }
 
             return Ok(messageFromRepo);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMessage(int userid, MessageForCreationDto dto)
+        public async Task<IActionResult> CreateMessage(int userId, MessageForCreationDto messageForCreationDto)
         {
-            if (userid != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
+            var sender = await _repo.GetUser(userId);
+
+            if (sender.Id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
-            }
 
-            dto.SenderId = userid;
-            var recipient = await _repo.GetUser(dto.RecipientId);
+            messageForCreationDto.SenderId = userId;
 
-            if(recipient ==null){
+            var recipient = await _repo.GetUser(messageForCreationDto.RecipientId);
+
+            if (recipient == null)
                 return BadRequest("Could not find user");
-            }
-
-            var message = _mapper.Map<Message>(dto);
+            
+            var message = _mapper.Map<Message>(messageForCreationDto);
 
             _repo.Add(message);
-            var messageToReturn = _mapper.Map<MessageForCreationDto>(message);
 
-            if(await _repo.SaveAll()){
+            if (await _repo.SaveAll())
+            {
+                var messageToReturn = _mapper.Map<MessageToReturnDto>(message);
                 return CreatedAtRoute("GetMessage", new {id = message.Id}, messageToReturn);
             }
 
             throw new Exception("Creating the message failed on save");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMessagesForUser(int userId, [FromQuery]MessageParams messageParams)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+
+            messageParams.UserId = userId;
+
+            var messagesFromRepo = await _repo.GetMessagesForUser(messageParams);
+
+            var messages = _mapper.Map<IEnumerable<MessageToReturnDto>>(messagesFromRepo);
+
+            Response.AddPagination(
+                messagesFromRepo.CurrentPage, 
+                messagesFromRepo.PageSize,
+                messagesFromRepo.TotalCount, 
+                messagesFromRepo.TotalPages);
+
+            return Ok(messages);
         }
     }
 }
